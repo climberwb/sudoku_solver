@@ -1,28 +1,24 @@
 def cross(A, B):
     "Cross product of elements in A and elements in B."
     return [s+t for s in A for t in B]
-
+# creates all rows and column groupings for standard sudoku
 rows = 'ABCDEFGHI'
 cols = '123456789'
 reverse_cols = cols[::-1]
 boxes = cross(rows, cols)
-
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
 
-#diagnol variables
+#crates diagonal groupings 
 diagonal_units_top = [[ row+cols[i] for i,row in enumerate(rows)] ]
 diagonal_units_bottom = [[ row+reverse_cols[i] for i,row in enumerate(rows)] ]
-
+# adds all the types of groupings to array
 unitlist = row_units + column_units + square_units + diagonal_units_top + diagonal_units_bottom
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+# creates peers for every cell in sudoku
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
-#diagnol variables
-# diagonal_units_top = [ row+cols[i] for i,row in enumerate(rows)] 
-# diagonal_units_bottom = [ row+reverse_cols[i] for i,row in enumerate(rows)] 
-# diagonal_units = list(set(diagonal_units_top+diagonal_units_bottom))
-# print(diagonal_units)
+
 
 
 def grid_values(grid):
@@ -60,6 +56,9 @@ def display(values):
         if r in 'CF': print(line)
 
 def eliminate(values):
+    '''
+    elimantes values for all the peers of a solved cell
+    '''
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
         digit = values[box]
@@ -68,6 +67,10 @@ def eliminate(values):
     return values
 
 def only_choice(values):
+    '''
+    If a unique digit is found for a given cell in a given box
+    the function changes the value of the cell to that unique value
+    '''
     for unit in unitlist:
         for digit in '123456789':
             dplaces = [box for box in unit if digit in values[box]]
@@ -76,12 +79,15 @@ def only_choice(values):
     return values
 
 def reduce_diagonal_puzzle(values):
-    solved_values = [box for box in values.keys() if len(values[box]) == 1]
+    
     stalled = False
     while not stalled:
+        # keep track of all solved values
         solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
-        values = eliminate(values)
-        values = only_choice(values)
+        # use to constraints to solve soudoku
+        values = eliminate(values) #eliminate is a constraint that applies to all units, diagonal, box, row, etc...
+        values = only_choice(values) # this constraint applies to just box unit
+        # see if progress was made on solved values
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         stalled = solved_values_before == solved_values_after
         if len([box for box in values.keys() if len(values[box]) == 0]):
