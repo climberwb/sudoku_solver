@@ -5,7 +5,7 @@
 Q: How do we use constraint propagation to solve the naked twins problem?  
 A: Constraint propagation is used by adding a constraint that checks for twins
    and removes the values of all peers that have those values. This constraint
-   is can be used to help solve the sodoku at every iteration within the depth-first 
+    can be used to help solve the sodoku at every iteration within the depth-first 
    search algorithm. 
 
 # Question 2 (Diagonal Sudoku)
