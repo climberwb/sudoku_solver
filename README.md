@@ -14,7 +14,7 @@ A: Constraint propagation is used here by including diagnoal units in
    the dictionary of peer lists. The eliminate constraint can then look at all 
    peers of a given solved cell and remove that number from all of those cell's
    peers. This constraint is then applied at every iteration with the depth-first
-   search algorithm
+   search algorithm.
 
 ### Install
 
