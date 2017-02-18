@@ -4,14 +4,26 @@ def cross(A, B):
 
 rows = 'ABCDEFGHI'
 cols = '123456789'
+reverse_cols = cols[::-1]
 boxes = cross(rows, cols)
 
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-unitlist = row_units + column_units + square_units
+
+#diagnol variables
+diagonal_units_top = [[ row+cols[i] for i,row in enumerate(rows)] ]
+diagonal_units_bottom = [[ row+reverse_cols[i] for i,row in enumerate(rows)] ]
+
+unitlist = row_units + column_units + square_units + diagonal_units_top + diagonal_units_bottom
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+#diagnol variables
+# diagonal_units_top = [ row+cols[i] for i,row in enumerate(rows)] 
+# diagonal_units_bottom = [ row+reverse_cols[i] for i,row in enumerate(rows)] 
+# diagonal_units = list(set(diagonal_units_top+diagonal_units_bottom))
+# print(diagonal_units)
+
 
 def grid_values(grid):
     """
@@ -63,7 +75,7 @@ def only_choice(values):
                 values[dplaces[0]] = digit
     return values
 
-def reduce_puzzle(values):
+def reduce_diagonal_puzzle(values):
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     stalled = False
     while not stalled:
@@ -77,7 +89,11 @@ def reduce_puzzle(values):
     return values
 
 def search(values):
-    values = reduce_puzzle(values)
+    """Using depth-first search and propagation, try all possible values.
+        a diagonal constraint will be added to check for solving diagonal sodoku 
+    """
+    # First, reduce the puzzle using the previous function
+    values = reduce_diagonal_puzzle(values)
     if values is False:
         return False ## Failed earlier
     if all(len(values[s]) == 1 for s in boxes): 
@@ -148,7 +164,10 @@ def solve(grid):
     Returns:
         The dictionary representation of the final sudoku grid. False if no solution exists.
     """
-
+    # convert str to testable hash_grid 
+    values = grid_values(grid)
+    # use depth-first search with constraint propagation to return solved sodoku
+    return search(values)
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
     display(solve(diag_sudoku_grid))
