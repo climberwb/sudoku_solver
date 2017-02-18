@@ -3,11 +3,18 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: Constraint propagation is used by adding a constraint that checks for twins
+   and removes the values of all peers that have those values. This constraint
+   is can be used to help solve the sodoku at every iteration within the depth-first 
+   search algorithm. 
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: Constraint propagation is used here by including diagnoal units in
+   the dictionary of peer lists. The eliminate constraint can then look at all 
+   peers of a given solved cell and remove that number from all of those cell's
+   peers. This constraint is then applied at every iteration with the depth-first
+   search algorithm
 
 ### Install
 
